@@ -1,40 +1,40 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Assets.Scripts.Towers
 {
     public class TowerPlacer : MonoBehaviour
     {
         public GameObject TowerPrefab = null;
-        private TowerController tower = null;
-        new private SpriteRenderer renderer;
+        private TowerController _tower = null;
+        private SpriteRenderer _renderer;
 
         // Use this for initialization
         void Start () {
-            renderer = gameObject.GetComponent<SpriteRenderer>();
-            renderer.enabled = false;
+            _renderer = gameObject.GetComponent<SpriteRenderer>();
+            _renderer.enabled = false;
         }
 	
         // Update is called once per frame
         void Update () {
-            if (LevelController.instance.PlaceTower && tower == null)
+            if (LevelController.instance.PlaceTower && _tower == null)
             {
-                renderer.enabled = true;
+                _renderer.enabled = true;
             }
             else
             {
-                renderer.enabled = false;
+                _renderer.enabled = false;
             }
         }
 
-        public bool canPlaceTower()
+        public bool CanPlaceTower()
         {
-            return tower == null;
+            return _tower == null;
         }
 
         void OnMouseEnter()
         {
             // Scale if hovered over
-            if (tower == null)
+            if (_tower == null)
             {
                 transform.localScale = new Vector3(1.5f, 1.5f, 1f);
             }
@@ -42,7 +42,7 @@ namespace Assets.Scripts.Towers
 
         void OnMouseExit()
         {
-            if (tower == null)
+            if (_tower == null)
             {
                 transform.localScale = new Vector3(1f, 1f, 1f);
             }
@@ -51,16 +51,16 @@ namespace Assets.Scripts.Towers
         void OnMouseUp()
         {
             // Make sure the player can place the tower here and has enough money to pay for it
-            if (LevelController.instance.PlaceTower && LevelController.instance.Money >= LevelController.instance.TowerPrefab.GetComponent<TowerController>().GetCost() && canPlaceTower())
+            if (LevelController.instance.PlaceTower && LevelController.instance.Money >= LevelController.instance.TowerPrefab.GetComponent<TowerController>().GetCost() && CanPlaceTower())
             {
-                LevelController.instance.PlaceTower = false;
-                renderer.enabled = false;
+//                LevelController.instance.PlaceTower = false;
+                _renderer.enabled = false;
                 TowerPrefab = LevelController.instance.TowerPrefab;
-                tower = ((GameObject)Instantiate(TowerPrefab, transform.position, Quaternion.identity)).GetComponent<TowerController>();
-                tower.transform.parent = gameObject.transform;
+                _tower = ((GameObject)Instantiate(TowerPrefab, transform.position, Quaternion.identity)).GetComponent<TowerController>();
+                _tower.transform.parent = gameObject.transform;
                 // Turn off sprite for placer
                 // Charge the player for the tower
-                LevelController.instance.Money -= tower.GetCost();
+                LevelController.instance.Money -= _tower.GetCost();
             }
         }
     }

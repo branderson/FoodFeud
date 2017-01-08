@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.UI;
 
 namespace Assets.Scripts.Towers
@@ -8,10 +8,10 @@ namespace Assets.Scripts.Towers
         // Cached instance of TowerSelectorController for lookup
         private static TowerSelectorController instanceRef = null;
 
-        private Image sodaImage;
-        private Image friesImage;
-        private Image nuggetImage;
-        private int selection = 0;
+        private TowerSelector _soda;
+        private TowerSelector _fries;
+        private TowerSelector _nuggets;
+        private int _selection = 0;
 
         // Instantiate singleton at start of scene
         public static TowerSelectorController instance {
@@ -35,15 +35,32 @@ namespace Assets.Scripts.Towers
         // Use this for initialization
         void Start ()
         {
-            sodaImage = GameObject.FindGameObjectWithTag("SodaImage").GetComponent<Image>();
-            friesImage = GameObject.FindGameObjectWithTag("FriesImage").GetComponent<Image>();
-            nuggetImage = GameObject.FindGameObjectWithTag("NuggetImage").GetComponent<Image>();
+            _soda = GameObject.FindGameObjectWithTag("SodaImage").GetComponent<TowerSelector>();
+            _fries = GameObject.FindGameObjectWithTag("FriesImage").GetComponent<TowerSelector>();
+            _nuggets = GameObject.FindGameObjectWithTag("NuggetImage").GetComponent<TowerSelector>();
             SetSelection(0);
             LevelController.instance.Money = LevelController.instance.Money;
         }
 	
         // Update is called once per frame
-        void Update () {
+        void Update ()
+        {
+            if (Input.GetButtonDown("Tower1"))
+            {
+                SetSelection(1);
+            }
+            else if (Input.GetButtonDown("Tower2"))
+            {
+                SetSelection(2);
+            }
+            else if (Input.GetButtonDown("Tower3"))
+            {
+                SetSelection(3);
+            }
+            else if (Input.GetButtonDown("Deselect"))
+            {
+                SetSelection(0);
+            }
         }
 
         public void SetSelection(int tower)
@@ -51,42 +68,22 @@ namespace Assets.Scripts.Towers
             switch (tower)
             {
                 case 1:
-                    selection = 1;
+                    _selection = 1;
                     break;
                 case 2:
-                    selection = 2;
+                    _selection = 2;
                     break;
                 case 3:
-                    selection = 3;
+                    _selection = 3;
                     break;
                 default:
-                    selection = 0;
+                    _selection = 0;
                     break;
             }
-            if (selection == 1)
-            {
-                Select(sodaImage);
-            }
-            else
-            {
-                Deselect(sodaImage);
-            }
-            if (selection == 2)
-            {
-                Select(friesImage);
-            }
-            else
-            {
-                Deselect(friesImage);
-            }
-            if (selection == 3)
-            {
-                Select(nuggetImage);
-            }
-            else
-            {
-                Deselect(nuggetImage);
-            }
+            _soda.Selected = _selection == 1;
+            _fries.Selected = _selection == 2;
+            _nuggets.Selected = _selection == 3;
+            LevelController.instance.SetSelection(_selection);
         }
 
         public void SetUnbuildable(int tower)
@@ -94,24 +91,20 @@ namespace Assets.Scripts.Towers
             switch (tower)
             {
                 case 1:
-                    SetUnbuildable(sodaImage);
+                    _soda.SetUnbuildable();
                     break;
                 case 2:
-                    SetUnbuildable(friesImage);
+                    _fries.SetUnbuildable();
                     break;
                 case 3:
-                    SetUnbuildable(nuggetImage);
+                    _nuggets.SetUnbuildable();
                     break;
             }
-        }
-
-        private void SetUnbuildable(Image image)
-        {
-            Color color = image.color;
-            color.r = 1f;
-            color.b = 0f;
-            color.g = 0f;
-            image.color = color;
+            // Deselect towers we cannot build
+            if (tower <= _selection)
+            {
+                SetSelection(0);
+            }
         }
 
         public void SetBuildable(int tower)
@@ -119,40 +112,15 @@ namespace Assets.Scripts.Towers
             switch (tower)
             {
                 case 1:
-                    SetBuildable(sodaImage);
+                    _soda.SetBuildable();
                     break;
                 case 2:
-                    SetBuildable(friesImage);
+                    _fries.SetBuildable();
                     break;
                 case 3:
-                    SetBuildable(nuggetImage);
+                    _nuggets.SetBuildable();
                     break;
             }
-        }
-
-        private void SetBuildable(Image image)
-        {
-            Color color = image.color;
-            color.r = 1f;
-            color.b = 1f;
-            color.g = 1f;
-            image.color = color;
-        }
-
-        private void Select(Image image)
-        {
-            image.rectTransform.localScale = new Vector3(1.3f, 1.3f, 1f);
-            Color color = image.color;
-            color.a = 1f;
-            image.color = color;
-        }
-
-        private void Deselect(Image image)
-        {
-            image.rectTransform.localScale = new Vector3(1f, 1f, 1f);
-            Color color = image.color;
-            color.a = .5f;
-            image.color = color;
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using Assets.Scripts.Towers;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -102,10 +102,6 @@ namespace Assets.Scripts
             set
             {
                 placeTower = value;
-                if (value == false)
-                {
-                    TowerSelectorController.instance.SetSelection(0);
-                }
             }
         }
 
@@ -175,30 +171,7 @@ namespace Assets.Scripts
         void Update () {
             if (SceneManager.GetActiveScene().name == "LevelScene")
             {
-                if (Input.GetButtonDown("Tower1"))
-                {
-                    PlaceTower = true;
-                    TowerPrefab = Tower1Prefab;
-                    TowerSelectorController.instance.SetSelection(1);
-                }
-                else if (Input.GetButtonDown("Tower2"))
-                {
-                    PlaceTower = true;
-                    TowerPrefab = Tower2Prefab;
-                    TowerSelectorController.instance.SetSelection(2);
-                }
-                else if (Input.GetButtonDown("Tower3"))
-                {
-                    PlaceTower = true;
-                    TowerPrefab = Tower3Prefab;
-                    TowerSelectorController.instance.SetSelection(3);
-                }
-                else if (Input.GetButtonDown("Deselect"))
-                {
-                    PlaceTower = false;
-                    TowerSelectorController.instance.SetSelection(0);
-                }
-                else if (Input.GetButtonDown("Start") && startedLevel == false)
+                if (Input.GetButtonDown("Start") && startedLevel == false)
                 {
                     startedLevel = true;
                     foreach (GameObject spawn in GameObject.FindGameObjectsWithTag("SpawnPoint"))
@@ -209,6 +182,28 @@ namespace Assets.Scripts
 
                 // Update money display
                 moneyText.text = "$" + Money.ToString();
+            }
+        }
+
+        public void SetSelection(int tower)
+        {
+            switch (tower)
+            {
+                case 1:
+                    PlaceTower = true;
+                    TowerPrefab = Tower1Prefab;
+                    break;
+                case 2:
+                    PlaceTower = true;
+                    TowerPrefab = Tower2Prefab;
+                    break;
+                case 3:
+                    PlaceTower = true;
+                    TowerPrefab = Tower3Prefab;
+                    break;
+                default:
+                    PlaceTower = false;
+                    break;
             }
         }
 
