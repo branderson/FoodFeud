@@ -30,6 +30,7 @@ namespace Assets.Scripts
         private bool startedLevel;
         private bool placeTower;
         public GameObject TowerPrefab;
+        public int TowerCost = 0;
         // Player information
         private int money;
         private int health;
@@ -67,27 +68,27 @@ namespace Assets.Scripts
                 money = value;
                 if (money < SodaTowerControllerCost)
                 {
-                    TowerSelectorController.instance.SetUnbuildable(1);
+                    TowerSelectorController.instance.SetUnbuildable(Tower.SodaTower);
                 }
                 else
                 {
-                    TowerSelectorController.instance.SetBuildable(1);
+                    TowerSelectorController.instance.SetBuildable(Tower.SodaTower);
                 }
                 if (money < FriesTowerControllerCost)
                 {
-                    TowerSelectorController.instance.SetUnbuildable(2);
+                    TowerSelectorController.instance.SetUnbuildable(Tower.FriesTower);
                 }
                 else
                 {
-                    TowerSelectorController.instance.SetBuildable(2);
+                    TowerSelectorController.instance.SetBuildable(Tower.FriesTower);
                 }
                 if (money < NuggetTowerControllerCost)
                 {
-                    TowerSelectorController.instance.SetUnbuildable(3);
+                    TowerSelectorController.instance.SetUnbuildable(Tower.NuggetTower);
                 }
                 else
                 {
-                    TowerSelectorController.instance.SetBuildable(3);
+                    TowerSelectorController.instance.SetBuildable(Tower.NuggetTower);
                 }
             }
         }
@@ -163,6 +164,7 @@ namespace Assets.Scripts
                 Enemies = 0;
                 Health = 20;
                 placeTower = false;
+                TowerCost = 0;
                 startedLevel = false;
             }
         }
@@ -181,28 +183,32 @@ namespace Assets.Scripts
                 }
 
                 // Update money display
-                moneyText.text = "$" + Money.ToString();
+                moneyText.text = Money.ToString();
             }
         }
 
-        public void SetSelection(int tower)
+        public void SetSelection(Tower tower)
         {
             switch (tower)
             {
-                case 1:
+                case Tower.SodaTower:
                     PlaceTower = true;
                     TowerPrefab = Tower1Prefab;
+                    TowerCost = SodaTowerControllerCost;
                     break;
-                case 2:
+                case Tower.FriesTower:
                     PlaceTower = true;
                     TowerPrefab = Tower2Prefab;
+                    TowerCost = FriesTowerControllerCost;
                     break;
-                case 3:
+                case Tower.NuggetTower:
                     PlaceTower = true;
                     TowerPrefab = Tower3Prefab;
+                    TowerCost = NuggetTowerControllerCost;
                     break;
                 default:
                     PlaceTower = false;
+                    TowerCost = 0;
                     break;
             }
         }

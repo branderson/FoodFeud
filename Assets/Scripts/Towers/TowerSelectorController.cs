@@ -3,15 +3,29 @@ using UnityEngine.UI;
 
 namespace Assets.Scripts.Towers
 {
+    public enum Tower
+    {
+        SodaTower = 1,
+        FriesTower = 2,
+        NuggetTower = 3,
+        NoTower = 0,
+        SellTower = -1
+    }
+
     public class TowerSelectorController : MonoBehaviour
     {
         // Cached instance of TowerSelectorController for lookup
         private static TowerSelectorController instanceRef = null;
 
+        public bool Selling = false;
+
         private TowerSelector _soda;
         private TowerSelector _fries;
         private TowerSelector _nuggets;
-        private int _selection = 0;
+        private TowerSelector _sell;
+        private Text _sellText;
+        private Tower _selection = Tower.NoTower;
+        private TowerController _hoverTower;
 
         // Instantiate singleton at start of scene
         public static TowerSelectorController instance {
@@ -38,7 +52,9 @@ namespace Assets.Scripts.Towers
             _soda = GameObject.FindGameObjectWithTag("SodaImage").GetComponent<TowerSelector>();
             _fries = GameObject.FindGameObjectWithTag("FriesImage").GetComponent<TowerSelector>();
             _nuggets = GameObject.FindGameObjectWithTag("NuggetImage").GetComponent<TowerSelector>();
-            SetSelection(0);
+            _sell = GameObject.FindGameObjectWithTag("SellImage").GetComponent<TowerSelector>();
+            _sellText = _sell.GetComponentInChildren<Text>();
+            SetSelection(Tower.NoTower);
             LevelController.instance.Money = LevelController.instance.Money;
         }
 	
@@ -47,80 +63,97 @@ namespace Assets.Scripts.Towers
         {
             if (Input.GetButtonDown("Tower1"))
             {
-                SetSelection(1);
+                SetSelection(Tower.SodaTower);
             }
             else if (Input.GetButtonDown("Tower2"))
             {
-                SetSelection(2);
+                SetSelection(Tower.FriesTower);
             }
             else if (Input.GetButtonDown("Tower3"))
             {
-                SetSelection(3);
+                SetSelection(Tower.NuggetTower);
+            }
+            else if (Input.GetButtonDown("Sell"))
+            {
+                SetSelection(Tower.SellTower);
             }
             else if (Input.GetButtonDown("Deselect"))
             {
-                SetSelection(0);
+                SetSelection(Tower.NoTower);
+            }
+            if (_selection == Tower.SellTower)
+            {
+                if (_hoverTower != null) _sellText.text = "$" + (_hoverTower.Cost/2);
+            }
+            else
+            {
+                _sellText.text = "";
             }
         }
 
-        public void SetSelection(int tower)
+        public void SetSelection(Tower tower)
         {
-            switch (tower)
-            {
-                case 1:
-                    _selection = 1;
-                    break;
-                case 2:
-                    _selection = 2;
-                    break;
-                case 3:
-                    _selection = 3;
-                    break;
-                default:
-                    _selection = 0;
-                    break;
-            }
-            _soda.Selected = _selection == 1;
-            _fries.Selected = _selection == 2;
-            _nuggets.Selected = _selection == 3;
+            _selection = tower;
+            _soda.Selected = _selection == Tower.SodaTower;
+            _fries.Selected = _selection == Tower.FriesTower;
+            _nuggets.Selected = _selection == Tower.NuggetTower;
+            _sell.Selected = _selection == Tower.SellTower;
+            Selling = _selection == Tower.SellTower;
             LevelController.instance.SetSelection(_selection);
         }
 
-        public void SetUnbuildable(int tower)
+        public void SetUnbuildable(Tower tower)
         {
             switch (tower)
             {
-                case 1:
+                case Tower.SodaTower:
                     _soda.SetUnbuildable();
                     break;
-                case 2:
+                case Tower.FriesTower:
                     _fries.SetUnbuildable();
                     break;
-                case 3:
+                case Tower.NuggetTower:
                     _nuggets.SetUnbuildable();
                     break;
             }
             // Deselect towers we cannot build
-            if (tower <= _selection)
-            {
-                SetSelection(0);
-            }
+//            if (tower <= _selection)
+//            {
+//                SetSelection(0);
+//            }
         }
 
-        public void SetBuildable(int tower)
+        public void SetBuildable(Tower tower)
         {
             switch (tower)
             {
-                case 1:
+                case Tower.SodaTower:
                     _soda.SetBuildable();
                     break;
-                case 2:
+                case Tower.FriesTower:
                     _fries.SetBuildable();
                     break;
-                case 3:
+                case Tower.NuggetTower:
                     _nuggets.SetBuildable();
                     break;
             }
+        }
+
+        public void HoverTower(TowerController tower)
+        {
+            _hoverTower = tower;
+        }
+
+        public void UnhoverTower(TowerController tower)
+        {
+            if (_hoverTower == tower) _hoverTower = null;
+        }
+
+        public void SellTower(TowerController tower)
+        {
+            if (_hoverTower == tower) _hoverTower = null;
+            LevelController.instance.Money += tower.Cost/2;
+            tower.Placer.DestroyTower();
         }
     }
 }

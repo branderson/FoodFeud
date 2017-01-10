@@ -5,7 +5,7 @@ namespace Assets.Scripts.Towers
 {
     public class TowerSelector : MonoBehaviour
     {
-        [SerializeField] private int _index = 0;
+        [SerializeField] private Tower _index = Tower.NoTower;
         private bool _selected = false;
         private Image _image;
 

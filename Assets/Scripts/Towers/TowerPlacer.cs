@@ -19,6 +19,23 @@ namespace Assets.Scripts.Towers
             if (LevelController.instance.PlaceTower && _tower == null)
             {
                 _renderer.enabled = true;
+                // Show as red if cannot build
+                if (LevelController.instance.Money < LevelController.instance.TowerCost)
+                {
+                    Color color = _renderer.color;
+                    color.r = 1f;
+                    color.b = 0f;
+                    color.g = 0f;
+                    _renderer.color = color;
+                }
+                else
+                {
+                    Color color = _renderer.color;
+                    color.r = 1f;
+                    color.b = 1f;
+                    color.g = 1f;
+                    _renderer.color = color;
+                }
             }
             else
             {
@@ -51,17 +68,24 @@ namespace Assets.Scripts.Towers
         void OnMouseUp()
         {
             // Make sure the player can place the tower here and has enough money to pay for it
-            if (LevelController.instance.PlaceTower && LevelController.instance.Money >= LevelController.instance.TowerPrefab.GetComponent<TowerController>().GetCost() && CanPlaceTower())
+            if (LevelController.instance.PlaceTower && LevelController.instance.Money >= LevelController.instance.TowerCost && CanPlaceTower())
             {
 //                LevelController.instance.PlaceTower = false;
                 _renderer.enabled = false;
+                transform.localScale = new Vector3(1f, 1f, 1f);
                 TowerPrefab = LevelController.instance.TowerPrefab;
                 _tower = ((GameObject)Instantiate(TowerPrefab, transform.position, Quaternion.identity)).GetComponent<TowerController>();
                 _tower.transform.parent = gameObject.transform;
+                _tower.Placer = this;
                 // Turn off sprite for placer
                 // Charge the player for the tower
                 LevelController.instance.Money -= _tower.GetCost();
             }
+        }
+
+        public void DestroyTower()
+        {
+            Destroy(_tower.gameObject);
         }
     }
 }

@@ -1,20 +1,22 @@
-﻿using UnityEngine;
-using System.Collections;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class TitleController : MonoBehaviour {
+#if UNITY_EDITOR
+using UnityEditor;
+#endif
 
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	    if (Input.GetButtonDown("Start"))
-	    {
-//	        SceneManager.LoadScene("MovieScene");
-	        SceneManager.LoadScene("LevelScene");
-	    }
-	}
+public class TitleController : MonoBehaviour
+{
+    public void StartGame()
+    {
+        SceneManager.LoadScene("LevelScene");
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+#if UNITY_EDITOR
+        EditorApplication.isPlaying = false;
+#endif
+    }
 }

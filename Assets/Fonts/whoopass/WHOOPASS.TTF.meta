@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 789647a4c07a1a844a7c4ba99cdc1824
+timeCreated: 1484027860
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: WhoopAss
+  fontNames:
+  - WhoopAss
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

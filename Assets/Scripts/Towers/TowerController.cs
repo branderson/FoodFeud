@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 namespace Assets.Scripts.Towers
 {
@@ -9,6 +9,7 @@ namespace Assets.Scripts.Towers
         private int countdown;
         public GameObject ProjectilePrefab;
         public int Cost = 100;
+        public TowerPlacer Placer;
 
         // Use this for initialization
         public void Start ()
@@ -32,6 +33,10 @@ namespace Assets.Scripts.Towers
                     tempController.Target = pos;
                 }
             }
+            if (!TowerSelectorController.instance.Selling)
+            {
+                transform.localScale = new Vector3(1f, 1f, 1f);
+            }
         }
 
         private GameObject FindClosestEnemy() {
@@ -54,6 +59,31 @@ namespace Assets.Scripts.Towers
         public int GetCost()
         {
             return Cost;
+        }
+
+        void OnMouseEnter()
+        {
+            // Scale if hovered over
+            if (TowerSelectorController.instance.Selling)
+            {
+                transform.localScale = new Vector3(1.5f, 1.5f, 1f);
+                TowerSelectorController.instance.HoverTower(this);
+            }
+        }
+
+        void OnMouseExit()
+        {
+            transform.localScale = new Vector3(1f, 1f, 1f);
+            TowerSelectorController.instance.UnhoverTower(this);
+        }
+
+        void OnMouseUp()
+        {
+            // Make sure the player can place the tower here and has enough money to pay for it
+            if (TowerSelectorController.instance.Selling)
+            {
+                TowerSelectorController.instance.SellTower(this);
+            }
         }
     }
 }
