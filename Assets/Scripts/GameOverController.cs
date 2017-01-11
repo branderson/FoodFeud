@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using System.Collections;
 using Assets.Scripts;
 using UnityEngine.SceneManagement;
@@ -20,7 +20,17 @@ public class GameOverController : MonoBehaviour
 	void Update () {
 	    if (Input.GetButtonDown("Start"))
 	    {
-	        SceneManager.LoadScene("LevelScene");
+	        Retry();
 	    }
 	}
+
+    public void Retry()
+    {
+        SceneManager.LoadScene("LevelScene");
+    }
+
+    public void QuitToMenu()
+    {
+        SceneManager.LoadScene("TitleScene");
+    }
 }

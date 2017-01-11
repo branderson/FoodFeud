@@ -20,6 +20,7 @@ namespace Assets.Scripts
         [SerializeField] private GameObject Tower1Prefab;
         [SerializeField] private GameObject Tower2Prefab;
         [SerializeField] private GameObject Tower3Prefab;
+        [SerializeField] private GameObject _startButton;
 
         public int SodaTowerControllerCost = 100;
         public int FriesTowerControllerCost = 400;
@@ -116,6 +117,7 @@ namespace Assets.Scripts
             set
             {
                 health = value;
+                if (healthText == null) return;
                 healthText.text = health.ToString();
             }
         }
@@ -130,7 +132,9 @@ namespace Assets.Scripts
             set
             {
                 score = value;
-                scoreText.text = score.ToString();
+                if (scoreText == null) return;
+                if (startedLevel) scoreText.text = score.ToString();
+                else scoreText.text = "";
             }
         }
 
@@ -144,6 +148,7 @@ namespace Assets.Scripts
             set
             {
                 enemies = value;
+                if (enemyText == null) return;
                 enemyText.text = enemies.ToString();
             }
         }
@@ -175,11 +180,7 @@ namespace Assets.Scripts
             {
                 if (Input.GetButtonDown("Start") && startedLevel == false)
                 {
-                    startedLevel = true;
-                    foreach (GameObject spawn in GameObject.FindGameObjectsWithTag("SpawnPoint"))
-                    {
-                        spawn.GetComponent<SpawnPointController>().enabled = true;
-                    }
+                    StartGame();
                 }
 
                 // Update money display
@@ -216,6 +217,27 @@ namespace Assets.Scripts
         // Ensure that the instance is destroyed when the game is stopped in the editor.
         void OnApplicationQuit() {
             instanceRef = null;
+        }
+
+        public void StartGame()
+        {
+            startedLevel = true;
+            foreach (GameObject spawn in GameObject.FindGameObjectsWithTag("SpawnPoint"))
+            {
+                spawn.GetComponent<SpawnPointController>().enabled = true;
+            }
+            _startButton.SetActive(false);
+            Score = 0;
+        }
+
+        public void LoseGame()
+        {
+            SceneManager.LoadScene("GameOverScene");
+        }
+
+        public void QuitGame()
+        {
+            SceneManager.LoadScene("TitleScene");
         }
     }
 }

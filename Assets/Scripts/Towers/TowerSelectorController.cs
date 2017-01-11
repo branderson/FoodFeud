@@ -23,7 +23,7 @@ namespace Assets.Scripts.Towers
         private TowerSelector _fries;
         private TowerSelector _nuggets;
         private TowerSelector _sell;
-        private Text _sellText;
+        [SerializeField] private Text _sellText;
         private Tower _selection = Tower.NoTower;
         private TowerController _hoverTower;
 
@@ -53,7 +53,6 @@ namespace Assets.Scripts.Towers
             _fries = GameObject.FindGameObjectWithTag("FriesImage").GetComponent<TowerSelector>();
             _nuggets = GameObject.FindGameObjectWithTag("NuggetImage").GetComponent<TowerSelector>();
             _sell = GameObject.FindGameObjectWithTag("SellImage").GetComponent<TowerSelector>();
-            _sellText = _sell.GetComponentInChildren<Text>();
             SetSelection(Tower.NoTower);
             LevelController.instance.Money = LevelController.instance.Money;
         }
@@ -84,6 +83,7 @@ namespace Assets.Scripts.Towers
             if (_selection == Tower.SellTower)
             {
                 if (_hoverTower != null) _sellText.text = "$" + (_hoverTower.Cost/2);
+                else _sellText.text = "";
             }
             else
             {

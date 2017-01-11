@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 namespace Assets.Scripts
@@ -26,7 +26,7 @@ namespace Assets.Scripts
                 health -= enemy.Damage;
                 if (health <= 0)
                 {
-                    SceneManager.LoadScene("GameOverScene");
+                    LevelController.instance.LoseGame();
                 }
                 Destroy(collision.gameObject);
                 LevelController.instance.Health = health;
